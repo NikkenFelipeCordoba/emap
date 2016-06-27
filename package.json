@@ -1,0 +1,24 @@
+{
+    "name": "emap",
+    "version": "0.0.1",
+    "description": "manages event listeners",
+    "main": "./js/emap.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://jan.arends@definitely.eu@github.com/jarends/emap.git"
+    },
+    "keywords": [
+        "managing",
+        "event",
+        "listeners"
+    ],
+    "author": "jarends",
+    "license": "UNLICENSED",
+    "bugs": {
+        "url": "https://github.com/jarends/emap/issues"
+    },
+    "homepage": "https://github.com/jarends/emap#readme",
+    "peerDependencies": {
+        "jsdictionary": "0.0.1"
+    }
+}

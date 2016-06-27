@@ -1,0 +1,18 @@
+{
+  "name": "emap",
+  "description": "manages event listeners",
+  "main": "./js/emap.js",
+  "authors": [
+    "jarends"
+  ],
+  "license": "UNLICENSED",
+  "keywords": [
+    "managing",
+    "event",
+    "listeners"
+  ],
+  "homepage": "https://github.com/jarends/emap",
+  "ignore": [
+    "**/.*"
+  ]
+}
