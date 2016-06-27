@@ -18,7 +18,7 @@
         "url": "https://github.com/jarends/emap/issues"
     },
     "homepage": "https://github.com/jarends/emap#readme",
-    "peerDependencies": {
+    "dependencies": {
         "jsdictionary": "0.0.1"
     }
 }
