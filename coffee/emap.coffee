@@ -1,4 +1,4 @@
-if require
+if require?
     Dict = require 'jsdictionary'
 else
     Dict = this.JSDictionary
@@ -37,21 +37,21 @@ class EventMap
         if dispatcher.addEventListener
             if owner
                 callback = (args...) -> handler.apply(owner, args); null
-                dispatcher.addEventListener(type, callback, useCapture)
+                dispatcher.addEventListener type, callback, useCapture
             else
-                dispatcher.addEventListener(type, handler, useCapture)
+                dispatcher.addEventListener type, handler, useCapture
 
         else if dispatcher.on
             if owner
                 callback = (args...) -> handler.apply(owner, args); null
-                dispatcher.on(type, callback, useCapture)
+                dispatcher.on type, callback, useCapture
             else
-                dispatcher.on(type, handler, useCapture)
+                dispatcher.on type, handler, useCapture
 
         else if dispatcher.add
-            dispatcher.add(type, handler, owner)
+            dispatcher.add type, handler, owner
 
-        listeners.push(d:dispatcher, o:owner, h:handler, u:useCapture, c:callback)
+        listeners.push d:dispatcher, o:owner, h:handler, u:useCapture, c:callback
         null
 
 
@@ -65,7 +65,7 @@ class EventMap
          0000000   000   000  000   000  000   000  000
     ###
     unmap: (dispatcher, type, handler, owner, useCapture = false) ->
-        listenerMap = @dispatcherMap.get(dispatcher)
+        listenerMap = @dispatcherMap.get dispatcher
         return null if not listenerMap
         listeners = listenerMap[type]
         return null if not listeners
@@ -74,25 +74,25 @@ class EventMap
         while --i >= 0
             info = listeners[i]
             if info.h == handler and info.o == owner and info.u == useCapture
-                listeners.splice(i, 1)
+                listeners.splice i, 1
 
                 if dispatcher.removeEventListener
                     if owner
-                        dispatcher.removeEventListener(type, info.c, useCapture)
+                        dispatcher.removeEventListener type, info.c, useCapture
                     else
-                        dispatcher.removeEventListener(type, handler, useCapture)
+                        dispatcher.removeEventListener type, handler, useCapture
 
                 else if dispatcher.off
                     if owner
-                        dispatcher.off(type, info.c, useCapture)
+                        dispatcher.off type, info.c, useCapture
                     else
-                        dispatcher.off(type, handler, useCapture)
+                        dispatcher.off type, handler, useCapture
 
                 else if dispatcher.remove
-                    dispatcher.remove(type, handler, owner)
+                    dispatcher.remove type, handler, owner
 
         delete listenerMap[type] if not listeners.length
-        @dispatcherMap.unmap(dispatcher) if not Dict.hasKeys(listenerMap)
+        @dispatcherMap.unmap dispatcher if not Dict.hasKeys listenerMap
         null
 
 
@@ -106,24 +106,24 @@ class EventMap
         000   000  0000000  0000000
     ###
     all: ->
-        @dispatcherMap.forEach((dispatcher, listenerMap) =>
+        @dispatcherMap.forEach (dispatcher, listenerMap) =>
             for type, listeners of listenerMap
                 while info = listeners.shift()
                     if dispatcher.removeEventListener
                         if info.o
-                            dispatcher.removeEventListener(type, info.c, info.u)
+                            dispatcher.removeEventListener type, info.c, info.u
                         else
-                            dispatcher.removeEventListener(type, info.h, info.u)
+                            dispatcher.removeEventListener type, info.h, info.u
 
                     else if dispatcher.off
                         if info.o
-                            dispatcher.off(type, info.c, info.u)
+                            dispatcher.off type, info.c, info.u
                         else
-                            dispatcher.off(type, info.h, info.u)
+                            dispatcher.off type, info.h, info.u
 
                     else if dispatcher.remove
-                        dispatcher.remove(type, info.h, info.o)
-            @dispatcherMap.unmap(dispatcher))
+                        dispatcher.remove type, info.h, info.o
+            @dispatcherMap.unmap dispatcher
         null
 
 
@@ -138,7 +138,7 @@ class EventMap
 ###
 
 
-if(module)
+if module?
     ### node export ###
     module.exports = EventMap
 else

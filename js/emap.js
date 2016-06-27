@@ -3,7 +3,7 @@
   var Dict, EventMap,
     slice = [].slice;
 
-  if (require) {
+  if (typeof require !== "undefined" && require !== null) {
     Dict = require('jsdictionary');
   } else {
     Dict = this.JSDictionary;
@@ -186,7 +186,7 @@
       00000000  000   000  000         0000000   000   000     000     0000000
    */
 
-  if (module) {
+  if (typeof module !== "undefined" && module !== null) {
 
     /* node export */
     module.exports = EventMap;
