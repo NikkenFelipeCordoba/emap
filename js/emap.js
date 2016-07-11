@@ -32,7 +32,7 @@
      */
 
     EventMap.prototype.map = function(dispatcher, type, handler, owner, useCapture) {
-      var callback, info, j, len, listenerMap, listeners, ref, ref1;
+      var callback, cb, info, j, len, listenerMap, listeners, ref, ref1;
       if (useCapture == null) {
         useCapture = false;
       }
@@ -44,30 +44,22 @@
           return null;
         }
       }
+      if (owner) {
+        cb = callback = function() {
+          var args;
+          args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          handler.apply(owner, args);
+          return null;
+        };
+      } else {
+        cb = handler;
+      }
       if (dispatcher.addEventListener) {
-        if (owner) {
-          callback = function() {
-            var args;
-            args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-            handler.apply(owner, args);
-            return null;
-          };
-          dispatcher.addEventListener(type, callback, useCapture);
-        } else {
-          dispatcher.addEventListener(type, handler, useCapture);
-        }
+        dispatcher.addEventListener(type, cb, useCapture);
+      } else if (dispatcher.addListener) {
+        dispatcher.addListener(type, cb, useCapture);
       } else if (dispatcher.on) {
-        if (owner) {
-          callback = function() {
-            var args;
-            args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-            handler.apply(owner, args);
-            return null;
-          };
-          dispatcher.on(type, callback, useCapture);
-        } else {
-          dispatcher.on(type, handler, useCapture);
-        }
+        dispatcher.on(type, cb, useCapture);
       } else if (dispatcher.add) {
         dispatcher.add(type, handler, owner);
       }
@@ -91,7 +83,7 @@
      */
 
     EventMap.prototype.unmap = function(dispatcher, type, handler, owner, useCapture) {
-      var i, info, listenerMap, listeners;
+      var cb, i, info, listenerMap, listeners;
       if (useCapture == null) {
         useCapture = false;
       }
@@ -108,18 +100,13 @@
         info = listeners[i];
         if (info.h === handler && info.o === owner && info.u === useCapture) {
           listeners.splice(i, 1);
+          cb = owner ? info.c : handler;
           if (dispatcher.removeEventListener) {
-            if (owner) {
-              dispatcher.removeEventListener(type, info.c, useCapture);
-            } else {
-              dispatcher.removeEventListener(type, handler, useCapture);
-            }
+            dispatcher.removeEventListener(type, cb, useCapture);
+          } else if (dispatcher.removeListener) {
+            dispatcher.removeListener(type, cb, useCapture);
           } else if (dispatcher.off) {
-            if (owner) {
-              dispatcher.off(type, info.c, useCapture);
-            } else {
-              dispatcher.off(type, handler, useCapture);
-            }
+            dispatcher.off(type, cb, useCapture);
           } else if (dispatcher.remove) {
             dispatcher.remove(type, handler, owner);
           }
@@ -146,22 +133,17 @@
     EventMap.prototype.all = function() {
       this.dispatcherMap.forEach((function(_this) {
         return function(dispatcher, listenerMap) {
-          var info, listeners, type;
+          var cb, info, listeners, type;
           for (type in listenerMap) {
             listeners = listenerMap[type];
             while (info = listeners.shift()) {
+              cb = info.o ? info.c : info.h;
               if (dispatcher.removeEventListener) {
-                if (info.o) {
-                  dispatcher.removeEventListener(type, info.c, info.u);
-                } else {
-                  dispatcher.removeEventListener(type, info.h, info.u);
-                }
+                dispatcher.removeEventListener(type, cb, info.u);
+              } else if (dispatcher.removeListener) {
+                dispatcher.removeListener(type, cb, info.u);
               } else if (dispatcher.off) {
-                if (info.o) {
-                  dispatcher.off(type, info.c, info.u);
-                } else {
-                  dispatcher.off(type, info.h, info.u);
-                }
+                dispatcher.off(type, cb, info.u);
               } else if (dispatcher.remove) {
                 dispatcher.remove(type, info.h, info.o);
               }

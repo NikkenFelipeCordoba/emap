@@ -8,7 +8,7 @@ if you want to remove all registered listeners at once.
 Works with:
 
 - addEventListener/removeEventListener (browser)
-- on/off (node)
+- on/addListener/off/removeListener (node)
 - add/remove (my own)
 
 ### Usage  
@@ -36,13 +36,13 @@ Works with:
     anchor = document.createElement 'a'
     
     # handler function
-    myHandler = (type, args...) ->
-        console.log "myHandler handles '#{type}' with args, ", args
+    myHandler = (args...) ->
+        console.log "myHandler called with: ", args
     
     # object with handler
     myObject = 
         handler: (type, args...) ->
-            console.log "#{this} handles '#{type}' with args, ", args
+            console.log "#{this}.handler called with: ", args
     
     # map dispatcher, type, handler, owner = null, useCapture = false
     eventMap.map emiter, 'ready', myHandler

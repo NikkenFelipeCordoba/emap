@@ -34,19 +34,19 @@ class EventMap
         for info in listeners
             return null if info.h == handler and info.o == owner and info.u == useCapture
 
+        if owner
+            cb = callback = (args...) -> handler.apply(owner, args); null
+        else
+            cb = handler
+
         if dispatcher.addEventListener
-            if owner
-                callback = (args...) -> handler.apply(owner, args); null
-                dispatcher.addEventListener type, callback, useCapture
-            else
-                dispatcher.addEventListener type, handler, useCapture
+            dispatcher.addEventListener type, cb, useCapture
+
+        else if dispatcher.addListener
+            dispatcher.addListener type, cb, useCapture
 
         else if dispatcher.on
-            if owner
-                callback = (args...) -> handler.apply(owner, args); null
-                dispatcher.on type, callback, useCapture
-            else
-                dispatcher.on type, handler, useCapture
+            dispatcher.on type, cb, useCapture
 
         else if dispatcher.add
             dispatcher.add type, handler, owner
@@ -76,17 +76,16 @@ class EventMap
             if info.h == handler and info.o == owner and info.u == useCapture
                 listeners.splice i, 1
 
+                cb = if owner then info.c else handler
+
                 if dispatcher.removeEventListener
-                    if owner
-                        dispatcher.removeEventListener type, info.c, useCapture
-                    else
-                        dispatcher.removeEventListener type, handler, useCapture
+                    dispatcher.removeEventListener type, cb, useCapture
+
+                else if dispatcher.removeListener
+                    dispatcher.removeListener type, cb, useCapture
 
                 else if dispatcher.off
-                    if owner
-                        dispatcher.off type, info.c, useCapture
-                    else
-                        dispatcher.off type, handler, useCapture
+                    dispatcher.off type, cb, useCapture
 
                 else if dispatcher.remove
                     dispatcher.remove type, handler, owner
@@ -109,17 +108,16 @@ class EventMap
         @dispatcherMap.forEach (dispatcher, listenerMap) =>
             for type, listeners of listenerMap
                 while info = listeners.shift()
+                    cb = if info.o then info.c else info.h
+
                     if dispatcher.removeEventListener
-                        if info.o
-                            dispatcher.removeEventListener type, info.c, info.u
-                        else
-                            dispatcher.removeEventListener type, info.h, info.u
+                        dispatcher.removeEventListener type, cb, info.u
+
+                    else if dispatcher.removeListener
+                        dispatcher.removeListener type, cb, info.u
 
                     else if dispatcher.off
-                        if info.o
-                            dispatcher.off type, info.c, info.u
-                        else
-                            dispatcher.off type, info.h, info.u
+                        dispatcher.off type, cb, info.u
 
                     else if dispatcher.remove
                         dispatcher.remove type, info.h, info.o
