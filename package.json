@@ -1,6 +1,6 @@
 {
     "name": "emap",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "manages event listeners",
     "main": "./js/emap.js",
     "repository": {
@@ -13,7 +13,7 @@
         "listeners"
     ],
     "author": "jarends",
-    "license": "UNLICENSED",
+    "license": "Unlicense",
     "bugs": {
         "url": "https://github.com/jarends/emap/issues"
     },
