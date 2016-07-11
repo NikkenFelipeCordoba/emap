@@ -53,8 +53,8 @@ Works with:
     # unmap dispatcher, type, handler, owner = null, useCapture = false
     eventMap.unmap emiter, 'ready', myHandler
     eventMap.unmap emiter, 'ready', myObject.handler, myObject
-    eventMap.unmap emiter, 'ready', myHandler
-    eventMap.unmap emiter, 'ready', myObject.handler, myObject
+    eventMap.unmap anchor, 'click', myHandler
+    eventMap.unmap anchor, 'click', myObject.handler, myObject, true
     
     
     # all
