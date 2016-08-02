@@ -9,6 +9,7 @@ Works with:
 
 - addEventListener/removeEventListener (browser)
 - on/addListener/off/removeListener (node)
+- angulars $on (with unregister handle)
 - add/remove (my own)
 
 ### Usage  

@@ -27,6 +27,7 @@ class EventMap
     map: (dispatcher, type, handler, owner, useCapture = false) ->
         listenerMap = @dispatcherMap.get(dispatcher) ? @dispatcherMap.map(dispatcher, {})
         listeners   = listenerMap[type] ? listenerMap[type] = []
+        unregister  = null
 
         for info in listeners
             return null if info.h == handler and info.o == owner and info.u == useCapture
@@ -45,10 +46,13 @@ class EventMap
         else if dispatcher.on
             dispatcher.on type, cb, useCapture
 
+        else if dispatcher.$on
+            unregister = dispatcher.$on type, cb, useCapture
+
         else if dispatcher.add
             dispatcher.add type, handler, owner
 
-        listeners.push d:dispatcher, o:owner, h:handler, u:useCapture, c:callback
+        listeners.push d:dispatcher, o:owner, h:handler, u:useCapture, c:callback, unregister:unregister
         null
 
 
@@ -75,7 +79,10 @@ class EventMap
 
                 cb = if owner then info.c else handler
 
-                if dispatcher.removeEventListener
+                if info.unregister
+                    info.unregister()
+
+                else if dispatcher.removeEventListener
                     dispatcher.removeEventListener type, cb, useCapture
 
                 else if dispatcher.removeListener
@@ -107,7 +114,10 @@ class EventMap
                 while info = listeners.shift()
                     cb = if info.o then info.c else info.h
 
-                    if dispatcher.removeEventListener
+                    if info.unregister
+                        info.unregister()
+
+                    else if dispatcher.removeEventListener
                         dispatcher.removeEventListener type, cb, info.u
 
                     else if dispatcher.removeListener

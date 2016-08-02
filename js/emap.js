@@ -28,12 +28,13 @@
      */
 
     EventMap.prototype.map = function(dispatcher, type, handler, owner, useCapture) {
-      var callback, cb, info, j, len, listenerMap, listeners, ref, ref1;
+      var callback, cb, info, j, len, listenerMap, listeners, ref, ref1, unregister;
       if (useCapture == null) {
         useCapture = false;
       }
       listenerMap = (ref = this.dispatcherMap.get(dispatcher)) != null ? ref : this.dispatcherMap.map(dispatcher, {});
       listeners = (ref1 = listenerMap[type]) != null ? ref1 : listenerMap[type] = [];
+      unregister = null;
       for (j = 0, len = listeners.length; j < len; j++) {
         info = listeners[j];
         if (info.h === handler && info.o === owner && info.u === useCapture) {
@@ -56,6 +57,8 @@
         dispatcher.addListener(type, cb, useCapture);
       } else if (dispatcher.on) {
         dispatcher.on(type, cb, useCapture);
+      } else if (dispatcher.$on) {
+        unregister = dispatcher.$on(type, cb, useCapture);
       } else if (dispatcher.add) {
         dispatcher.add(type, handler, owner);
       }
@@ -64,7 +67,8 @@
         o: owner,
         h: handler,
         u: useCapture,
-        c: callback
+        c: callback,
+        unregister: unregister
       });
       return null;
     };
@@ -97,7 +101,9 @@
         if (info.h === handler && info.o === owner && info.u === useCapture) {
           listeners.splice(i, 1);
           cb = owner ? info.c : handler;
-          if (dispatcher.removeEventListener) {
+          if (info.unregister) {
+            info.unregister();
+          } else if (dispatcher.removeEventListener) {
             dispatcher.removeEventListener(type, cb, useCapture);
           } else if (dispatcher.removeListener) {
             dispatcher.removeListener(type, cb, useCapture);
@@ -134,7 +140,9 @@
             listeners = listenerMap[type];
             while (info = listeners.shift()) {
               cb = info.o ? info.c : info.h;
-              if (dispatcher.removeEventListener) {
+              if (info.unregister) {
+                info.unregister();
+              } else if (dispatcher.removeEventListener) {
                 dispatcher.removeEventListener(type, cb, info.u);
               } else if (dispatcher.removeListener) {
                 dispatcher.removeListener(type, cb, info.u);
