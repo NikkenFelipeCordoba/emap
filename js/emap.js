@@ -3,11 +3,7 @@
   var Dict, EventMap,
     slice = [].slice;
 
-  if (typeof require !== "undefined" && require !== null) {
-    Dict = require('jsdictionary');
-  } else {
-    Dict = this.JSDictionary;
-  }
+  Dict = require('jsdictionary');
 
   EventMap = (function() {
 
@@ -168,15 +164,7 @@
       00000000  000   000  000         0000000   000   000     000     0000000
    */
 
-  if (typeof module !== "undefined" && module !== null) {
-
-    /* node export */
-    module.exports = EventMap;
-  } else {
-
-    /* browser export */
-    this.EventMap = EventMap;
-  }
+  module.exports = EventMap;
 
 }).call(this);
 

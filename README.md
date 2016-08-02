@@ -15,12 +15,7 @@ Works with:
 
 ```coffee-script
     
-    # node
     EventMap = require 'emap'
-    
-    # browser
-    # as global EventMap
-    
     eventMap = new EventMap()
     
 ```

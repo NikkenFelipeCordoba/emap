@@ -1,7 +1,4 @@
-if require?
-    Dict = require 'jsdictionary'
-else
-    Dict = this.JSDictionary
+Dict = require 'jsdictionary'
 
 
 class EventMap
@@ -136,9 +133,4 @@ class EventMap
 ###
 
 
-if module?
-    ### node export ###
-    module.exports = EventMap
-else
-    ### browser export ###
-    this.EventMap = EventMap
+module.exports = EventMap
