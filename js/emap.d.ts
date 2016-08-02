@@ -1,4 +1,4 @@
-import JSDictionary = require('jsdictionary');
+import JSDictionary from 'jsdictionary';
 
 declare class EventMap {
     public dispatcherMap: JSDictionary;
@@ -7,4 +7,4 @@ declare class EventMap {
     public all(): void;
 }
 
-export = EventMap;
+export default EventMap;
