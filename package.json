@@ -1,6 +1,6 @@
 {
     "name": "emap",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "manages event listeners",
     "main": "./js/emap.js",
     "repository": {
@@ -19,6 +19,7 @@
     },
     "homepage": "https://github.com/jarends/emap#readme",
     "dependencies": {
-        "jsdictionary": "0.0.1"
-    }
+        "jsdictionary": "^0.0.4"
+    },
+    "typings": "./js/emap.d.ts"
 }
